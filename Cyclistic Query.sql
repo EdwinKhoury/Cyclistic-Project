@@ -1,5 +1,5 @@
 
---1) Create a table where the 12 tables (each representing one month of the year) are combined into 1 table
+--1) Create a table where the 12 tables (each representing one month of the year) are combined into one table
 
 DROP TABLE IF exists #TripData
 CREATE TABLE #TripData
@@ -65,8 +65,10 @@ FROM CyclisticProject..June_23
 FROM #TripData
 ORDER BY  started_at
 
+	
 ----------------
 
+	
 --2) Substracting the number of non-NULL values from the total count of rows to determine the number of NULL values for each column
 
 SELECT 
@@ -80,16 +82,20 @@ SELECT
 FROM #TripData
 --There are NULL values in the start station name column and the end station name column.
 
+	
 ----------------
 
+	
 --3) Substracting the number of distinct ride IDs from the total number of ride IDs to determine the number of duplicates 
 
 SELECT COUNT(ride_id) - COUNT(DISTINCT ride_id) AS duplicate_rows
 FROM #TripData
 --There are 7 duplicate rows in the dataset.
 
+	
 ----------------
 
+	
 --4) Check the type of bikes that are available and how many rides there are per type
 
 SELECT DISTINCT rideable_type, COUNT(rideable_type) AS num_of_rides
@@ -98,8 +104,10 @@ GROUP BY rideable_type
 ORDER BY num_of_rides
 --The electric bikes are the most used with a total of 3,142,589 followed by the classic bikes with a total of 2,495,320.
 
+	
 ----------------
 
+	
 --5) Divide the datetime column into date and time, and add the new columns in the original table
 
 SELECT 
@@ -141,8 +149,10 @@ SELECT *
 FROM #TripData
 ORDER BY started_at
 
+	
 ----------------
 
+	
 --6) Calculate the time difference 
 
 SELECT started_at, ended_at,
@@ -156,25 +166,31 @@ ADD time_difference time
 UPDATE #TripData
 SET time_difference = CONVERT(varchar(19), DATEADD(second, DATEDIFF(second, started_at, ended_at), '19000101'), 120)
 
+	
 ----------------
 
+	
 --7) Count the rides that are longer than a day 
 SELECT COUNT(*) AS ride_greater_than_a_day
 FROM #TripData
 WHERE DATEDIFF(second, '00:00:00', CAST(time_difference AS time)) > 86400
 --There are no rides that are longer than a day.
 
+	
 ----------------
 
+	
 --8) Count the rides that are less than a minute
 SELECT COUNT(*) AS ride_less_than_a_minute
 FROM #TripData
 WHERE DATEDIFF(second, '00:00:00', CAST(time_difference AS time)) < 60
---There are 149,266 rides that are shorter than a minute: these rides tend to falsifiy the results since they are 
+--There are 149,266 rides that are shorter than a minute: these rides tend to falsify the results since they are 
 --not considered as a ride but maybe a bike that was picked up and directly put back to place.
 
+	
 ----------------
 
+	
 --9) Data cleaning
 
 DROP TABLE IF exists #TripDataCleaned                                               --Create a new temp table for the cleaned data
@@ -219,24 +235,26 @@ SELECT a.ride_id, a.rideable_type, a.started_at, a.ended_at, ride_length,
 	END AS month,
 	 a.start_station_name, a.end_station_name, a.member_casual
 
-FROM #TripData AS a                                                                                  --Join table a and b on the ride IDs 
+FROM #TripData AS a                                                                                      --Join table a and b on the ride IDs 
 JOIN (
 	SELECT ride_id, CONVERT(varchar(19), 
 	DATEADD(second, DATEDIFF(second, started_at, ended_at), '19000101'), 120) AS ride_length         --Create table b with 2 different columns: ride ID and the ride length
 	FROM #TripData
 	) AS b
 ON a.ride_id = b.ride_id
-WHERE																					             --Filter out the station names with NULL values 
+WHERE				                                                                        --Filter out the station names with NULL values 
 	start_station_name is not NULL 
-	AND end_station_name is not NULL													             --and the rides that are less than a minute
+	AND end_station_name is not NULL                                                                --and the rides that are less than a minute
 	AND DATEPART(minute,CAST(ride_length AS time)) >1
 	
 
 SELECT * 
 FROM #TripDataCleaned
 
+	
 ----------------
 
+	
  --10) Evaluate the type of bikes used as well as their respective number of rides depending on the rider
 
 SELECT member_casual, rideable_type, COUNT(*) AS total_trips
@@ -244,10 +262,12 @@ FROM #TripDataCleaned
 GROUP BY member_casual, rideable_type
 ORDER BY total_trips 
 --Casual riders have less trips (1,620,486) than member riders (2,614,235).
---This indicate that riders that are members go on rides more oftenly than casula riders and that might be because of the lower price for a single ride.
+--This indicates that riders who are members go on rides more often than casual riders and that might be because of the lower price for a single ride.
 
+	
 ----------------
 
+	
 --11) Calculate the number of trips per month
 
 SELECT month, COUNT(*) AS total_trips
@@ -256,10 +276,12 @@ GROUP BY month
 ORDER BY total_trips
 --December is the month with the least number of rides with a total of 129,606
 --July is the month with the greatest number of rides with a total of 620,066
---Winter months usualy has less rides than summer months because of the weather.
+--Winter months usually have fewer rides than summer months because of the weather.
 
+	
 ----------------
 
+	
 --12) Calculate the number of trips per week
 
 SELECT day_of_week, COUNT(*) AS total_trips
@@ -269,8 +291,10 @@ ORDER BY total_trips
 --Most of the trips are taken on Saturday with a total number of rides of 671,233
 --On Sunday, only 540,437 trips are taken, which is the day with the least number of rides.
 
+	
 ----------------
 
+	
 --13) Calculate the number of trips per hour
 
 SELECT DATEPART(hour, started_at) AS hour_of_day, COUNT(*) AS total_trips
@@ -280,8 +304,10 @@ ORDER BY total_trips
 --Rush hour is at 5 PM.
 --The least number of rides happens to be at 4 AM.
 
+	
 ----------------
 
+	
 --14) Average ride length per hour
 
 SELECT 
@@ -296,8 +322,11 @@ GROUP BY DATEPART(hour, started_at)
 ORDER BY average_duration_minutes
 --At 2 PM, the rides tend to be the longest with an average ride of 18.6 minutes.
 --At 5 AM, the rides tend to be the shortest with an average ride of 11 minutes.
+
+	
 ----------------
 
+	
 --15) Average ride length per day
 
 SELECT 
@@ -312,10 +341,12 @@ GROUP BY day_of_week
 ORDER BY average_duration_minutes
 --On Saturdays, the rides are the longest with an average ride of 19.6 minutes.
 --On Wednesdays, the rides are the shortest with an average ride of 14 minutes.
---It is worth noting that during the weekend, the rides are almost 4 minutes longer on average than weekdays.
+--It is worth noting that during the weekend, the rides are almost 4 minutes longer on average than on weekdays.
 
+	
 ----------------
 
+	
 --16) Average ride length per month
 
 SELECT 
@@ -332,32 +363,38 @@ ORDER BY average_duration_minutes
 --In July, the rides are the longest with an average of 19 minutes per ride.
 --Summer rides are on average 8 minutes longer than those in winter. 
 
+	
 ----------------
 
+	
 --17) Most busy starting station
 
 SELECT start_station_name, COUNT (*) AS num_of_rides
 FROM #TripDataCleaned
 GROUP BY start_station_name
 ORDER BY num_of_rides DESC
---Streeter Dr & Grand Ave is the station where most of the rides starts with 63,371 bikes undocked in total.
+--Streeter Dr & Grand Ave is the station where most of the rides start with 63,371 bikes undocked in total.
 --Since it is the busiest, the company might consider adding more bikes to satisfy the demand.
 
+	
 ----------------
 
+	
 --18) Most busy ending station
 
 SELECT end_station_name, COUNT (*) AS num_of_rides
 FROM #TripDataCleaned
 GROUP BY end_station_name
 ORDER BY num_of_rides DESC
---Streeter Dr & Grand Ave is also the station where most of the rides ends with 64,958 bikes docked in total.
+--Streeter Dr & Grand Ave is also the station where most of the rides end with 64,958 bikes docked in total.
 --The  number of docked bikes is greater than the number of undocked bikes. 
---The company might consider adding docking station to accomodate for the high number of docking bikes.
+--The company might consider adding a docking station to accommodate the high number of docking bikes.
 
+	
 ----------------
 
---19) Most used trajectory: what is the pair of stations that is the most used 
+	
+--19) Most used trajectory: what is the pair of stations that are the most used? 
 
 SELECT  top 10 start_station_name , end_station_name , COUNT(*) AS num_of_rides
 FROM #TripDataCleaned
