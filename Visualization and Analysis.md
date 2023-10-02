@@ -10,7 +10,7 @@ Also, for both types of users, the classic bikes are more used than the electric
 as well as the needs of the riders.
 
 
-## ** Monthly Analysis**
+## **Monthly Analysis**
 ### **Number of Trips per Month**
 
 pic
@@ -37,7 +37,7 @@ Most of the trips are taken on Saturdays, with a total number of rides of 671,23
 which is the day with the least number of rides.
 
 
-### **Ride Length for Different Days of the Week
+### **Ride Length for Different Days of the Week**
 
 pic
 
