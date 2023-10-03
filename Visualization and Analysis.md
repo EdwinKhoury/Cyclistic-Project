@@ -27,14 +27,14 @@ In January, the rides are the shortest, with an average of 10.9 minutes per ride
 
 ![Number of Trips per Day of Week](https://github.com/EdwinKhoury/Cyclistic-Project/assets/146214280/17a0a2aa-776e-444a-93e3-b8447744a376)
 
-Most of the trips are taken on Saturdays, with a total number of rides of 671,233. On Sunday, only 540,437 trips are taken which is the day with the least number of rides.
+Most of the trips are taken on Saturdays, with a total number of rides of 671,233. On Sunday, only 540,437 trips are taken, which is the day with the least number of rides.
 
 
 ### **Ride Length for Different Days of the Week**
 
 ![Average Ride Length on Different Days of the Week (1)](https://github.com/EdwinKhoury/Cyclistic-Project/assets/146214280/f40d450b-0a49-4c0a-9ff3-d6c3559d57be)
 
-On Saturdays, the rides are the longest, with an average ride time of 19.6 minutes. On Tuesdays and Wednesdays, the ridesare the shortest, with an average ride of 14 minutes. It is worth noting that during the weekend, the rides are almost 4 minutes longer on average than on weekdays.
+On Saturdays, the rides are the longest, with an average ride time of 19.6 minutes. On Tuesdays and Wednesdays, the rides are the shortest, with an average ride of 14 minutes. It is worth noting that during the weekend, the rides are almost 4 minutes longer on average than on weekdays.
 
 
 ## **Hourly Analysis**
